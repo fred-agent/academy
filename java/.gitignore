@@ -1,0 +1,12 @@
+# ======================
+# Gradle (local only)
+# ======================
+.gradle/
+build/
+.gradle-user/
+
+# ======================
+# Java compiler output
+# ======================
+bin/
+out/

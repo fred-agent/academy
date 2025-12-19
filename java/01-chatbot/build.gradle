@@ -1,0 +1,51 @@
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '3.3.5'
+  id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'fredlab.dev'
+version = '0.0.1'
+java {
+  // Use Java 17 so the project builds on a standard Spring Boot baseline without needing a newer JDK download.
+  toolchain { languageVersion = JavaLanguageVersion.of(17) }
+}
+
+ext {
+  springAiVersion = '1.0.0-M2'
+}
+
+repositories {
+  mavenCentral()
+  maven { url 'https://repo.spring.io/milestone' }
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+  }
+}
+
+dependencies {
+  implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+  implementation 'org.springframework.boot:spring-boot-starter-webflux'
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'io.projectreactor:reactor-test'
+}
+clean {
+    delete "bin"
+}
+test { useJUnitPlatform() }
+
+// Task to create a zip of the source code for sharing
+task sourceZip(type: Zip) {
+    from ('.') {
+        // Exclude Gradle cache, build outputs, and IDE files
+        exclude '.gradle', '.gradle-user', 'build', 'bin', '.idea', '*.iml'
+    }
+    archiveFileName = "${project.name}-src.zip"
+    destinationDirectory = file('build')
+}
